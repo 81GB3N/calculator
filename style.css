@@ -8,7 +8,6 @@
      */
 }
 
-
 html, body{
     height: 100%;
 }
@@ -157,13 +156,6 @@ button.clicked{
         font-size: 1.5rem;
     }
   }
-
-  /* .screen3{
-    display: flex;
-    align-self: end;
-    margin-right: 5%;
-    opacity: 50%;
-  } */
 
   footer{
     text-align: center;

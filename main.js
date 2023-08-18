@@ -31,9 +31,11 @@ function applyClickedClass(charCode) {
         }, 100); 
     }
 
-    if(charCode == '66')backspace(); //problematiska situacija
+    if(charCode == '66')backspace();
     if(charCode == '99')clear();
-    if(isNumber.includes(matchingButton.classList[0]) || matchingButton.classList[0] == '.' || matchingButton.classList[0] == '-'){
+    if((matchingButton.classList[0] == '-' && secondNumber == '' && firstNumber != '' && memory != 0 && (secondNumber.split('-').length - 1) == '0'))
+        secondNumber += matchingButton.classList[0];
+    if(isNumber.includes(matchingButton.classList[0]) || matchingButton.classList[0] == '.' || (matchingButton.classList[0] == '-' && firstNumber == '')){
         if(memory == ''){
             if(matchingButton.classList[0] == '.' && (firstNumber.split('.').length - 1) == '0'){
                 firstNumber += matchingButton.classList[0];
@@ -41,17 +43,14 @@ function applyClickedClass(charCode) {
             else if(matchingButton.classList[0] == '-' && (firstNumber.split('-').length - 1) == '0' && firstNumber == ''){
                 firstNumber += matchingButton.classList[0];
             }
-            else if(matchingButton.classList[0] != '.'){
+            else if(matchingButton.classList[0] != '.' && matchingButton.classList[0] != '-'){
                 firstNumber += matchingButton.classList[0];
             }
         }
         else{
             if(matchingButton.classList[0] == '.' && (secondNumber.split('.').length - 1) == '0')
                 secondNumber += matchingButton.classList[0];
-             else if(matchingButton.classList[0] == '-' && (secondNumber.split('-').length - 1) == '0' && secondNumber == ''){
-                secondNumber += matchingButton.classList[0];
-            }
-            else if(matchingButton.classList[0] != '.')
+            else if(matchingButton.classList[0] != '.' && matchingButton.classList[0] != '-')
                 secondNumber += matchingButton.classList[0];
         }
     }
@@ -65,7 +64,7 @@ function applyClickedClass(charCode) {
         else if(memory[0] == '*') multiply();
         else if(memory[0] == '/') divide();
     }
-    if(memory.includes('=')) equal();
+    if(memory.includes('=') || charCode == '69') equal();
         input.innerText = firstNumber + memory + secondNumber;
 }
 
@@ -130,7 +129,6 @@ function backspace(){
         input.innerText = firstNumber + memory + secondNumber;
 }
 // chat gpt code
-
 
 function clear(){
     input.innerText = '';
