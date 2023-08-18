@@ -33,8 +33,6 @@ function applyClickedClass(charCode) {
 
     if(charCode == '66')backspace();
     if(charCode == '99')clear();
-    if((matchingButton.classList[0] == '-' && secondNumber == '' && firstNumber != '' && memory != 0 && (secondNumber.split('-').length - 1) == '0'))
-        secondNumber += matchingButton.classList[0];
     if(isNumber.includes(matchingButton.classList[0]) || matchingButton.classList[0] == '.' || (matchingButton.classList[0] == '-' && firstNumber == '')){
         if(memory == ''){
             if(matchingButton.classList[0] == '.' && (firstNumber.split('.').length - 1) == '0'){
@@ -54,7 +52,9 @@ function applyClickedClass(charCode) {
                 secondNumber += matchingButton.classList[0];
         }
     }
-    else{
+    else if(memory.length == '1' && matchingButton.classList[0] == '-' && secondNumber == '' && (secondNumber.split('-').length - 1) == '0')
+        secondNumber += matchingButton.classList[0];
+    else if(firstNumber != ''){
         memory += (`${matchingButton.classList[0]}`);
     }
     answer = firstNumber;
