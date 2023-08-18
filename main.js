@@ -2,7 +2,7 @@ let choice;
 
 document.addEventListener('keydown', function(e) {
     choice = e.key.charCodeAt(0);
-    console.log(choice);
+    console.log(choice);//
     applyClickedClass(choice);
 });
 
@@ -10,21 +10,17 @@ const button = document.querySelectorAll('button');
 button.forEach(element => {
     element.addEventListener('click', function(e) {
         choice = this.textContent.charCodeAt(0);
-        console.log(choice);
+        console.log(choice);//
         applyClickedClass(choice);
     });
 });
 
 const input = document.querySelector('.screen1 .input');
-let counter = 0;
-let currentNumber = '';
 let isNumber = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-let newNumber = '';
-let active = true;
 const realAnswer = document.querySelector('.real-answer');
 let answer = '0';
 let firstNumber = '', secondNumber = '';
-let pointCounter;
+let memory = '';
 
 function applyClickedClass(charCode) {
     let matchingButton = document.querySelector(`button[class="${String.fromCharCode(charCode)}"]`);
@@ -35,75 +31,111 @@ function applyClickedClass(charCode) {
         }, 100); 
     }
 
-    if(charCode == '8') backspace();
-    if(charCode == '99') clear();
-    if(matchingButton.classList[0] == '=') equal();
-// console.log(matchingButton);
-// console.log(`${matchingButton.classList[0]}`);
-//nuo cia pzda reik viska sutvarkyt 
-
-    if(isNumber.includes(matchingButton.classList[0]) || matchingButton.classList[0] == '.'){
-        active = false;
-        if(isNumber.includes(matchingButton.classList[0])){
-            // currentNumber += (`${matchingButton.classList[0]}`);
-            input.innerText += (`${matchingButton.classList[0]}`);
+    if(charCode == '66')backspace(); //problematiska situacija
+    if(charCode == '99')clear();
+    if(isNumber.includes(matchingButton.classList[0]) || matchingButton.classList[0] == '.' || matchingButton.classList[0] == '-'){
+        if(memory == ''){
+            if(matchingButton.classList[0] == '.' && (firstNumber.split('.').length - 1) == '0'){
+                firstNumber += matchingButton.classList[0];
+            }
+            else if(matchingButton.classList[0] == '-' && (firstNumber.split('-').length - 1) == '0' && firstNumber == ''){
+                firstNumber += matchingButton.classList[0];
+            }
+            else if(matchingButton.classList[0] != '.'){
+                firstNumber += matchingButton.classList[0];
+            }
         }
-
+        else{
+            if(matchingButton.classList[0] == '.' && (secondNumber.split('.').length - 1) == '0')
+                secondNumber += matchingButton.classList[0];
+             else if(matchingButton.classList[0] == '-' && (secondNumber.split('-').length - 1) == '0' && secondNumber == ''){
+                secondNumber += matchingButton.classList[0];
+            }
+            else if(matchingButton.classList[0] != '.')
+                secondNumber += matchingButton.classList[0];
+        }
     }
-    // else if(firstNumber == ''){
-    //     alert('enter first number!');
-    // }
-    else if(!active && matchingButton.classList[0] != '='){
-        input.innerText += (`${matchingButton.classList[0]}`);
-        active = true;
-        if(matchingButton.classList[0] == '+') add();
-        else if(matchingButton.classList[0] == '-') subtract();
-        else if(matchingButton.classList[0] == '*') multiply();
-        else if(matchingButton.classList[0] == '/') divide();
+    else{
+        memory += (`${matchingButton.classList[0]}`);
     }
-
+    answer = firstNumber;
+    if(memory.length == '2'){
+        if(memory[0] == '+') add();
+        else if(memory[0] == '-') subtract();
+        else if(memory[0] == '*') multiply();
+        else if(memory[0] == '/') divide();
+    }
+    if(memory.includes('=')) equal();
+        input.innerText = firstNumber + memory + secondNumber;
 }
 
 function add(){
     answer = Number(firstNumber) + Number(secondNumber);
+    logic();
 }
 
 function subtract(){
     answer = Number(firstNumber) - Number(secondNumber);
+    logic();
 }
 
 function multiply(){
     answer = Number(firstNumber) * Number(secondNumber);
+    logic();
 }
 
 function divide(){
-    answer = Number(firstNumber) / Number(secondNumber);
+    if(secondNumber == 0){
+        answer = 'Nuh uh';
+        firstNumber = '';
+        secondNumber = '';
+        memory = memory[1];
+    }
+    else{
+        answer = Number(firstNumber) / Number(secondNumber);
+        logic();
+    }
+}
+
+function logic(){
+    firstNumber = answer;
+    secondNumber = '';
+    memory = memory[1];
 }
 
 function equal(){
+    memory = '';
     input.innerText = '';
-    currentNumber = '';
-    newNumber = '';
-    if(answer % 1 != 0)
-        realAnswer.innerText = answer.toFixed(2);
-    else
-    realAnswer.innerText = answer;
-    active = false;
-}
-
-function point(){
-
+    firstNumber = answer; //jei nori, kad skaiciai eitu is naujo tai first answer = '';
+    secondNumber = '';
+    if(answer == 'Nuh uh'){
+        realAnswer.innerText = answer;
+    }
+    else if(answer % 1 != 0){
+        realAnswer.innerText = Number(answer).toFixed(2);
+    }
+    else{
+        realAnswer.innerText = answer;
+    }
 }
 
 function backspace(){
-    newNumber = currentNumber.slice(1)
-    input.innerText = newNumber;
-    currentNumber = newNumber;
+    console.log('backspace');
+    if(secondNumber.length)
+        secondNumber = secondNumber.substring(0, secondNumber.length - 1);
+    else if(memory.length)
+        memory = '';
+    else if(firstNumber.length)
+        firstNumber = firstNumber.substring(0, firstNumber.length - 1);
+        input.innerText = firstNumber + memory + secondNumber;
 }
+// chat gpt code
+
 
 function clear(){
     input.innerText = '';
-    currentNumber = '';
-    newNumber = '';
+    firstNumber = '';
+    secondNumber = '';
+    memory = '';
     realAnswer.innerText = '';
 }
